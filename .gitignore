@@ -1,0 +1,21 @@
+/*.log
+/mavexlog.txt
+/*.exc
+/*/target
+/*/*/target
+/*/*/*/target
+
+#MDA
+/mda/src/uml/*.mdr
+/mda/src/uml/*.xml.bak
+
+#Serviços
+/core/cs/maven.xml
+/core/cs/*/maven.xml
+!/core/cs/initial/maven.xml
+
+#Módulo Web
+/web/maven.xml
+/web/*/maven.xml
+!/web/layout/maven.xml
+!/web/help/maven.xml
