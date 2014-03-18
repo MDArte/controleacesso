@@ -1,0 +1,98 @@
+<project default="install"
+        xmlns:ant="jelly:ant"
+        xmlns:maven="jelly:maven"
+        xmlns:j="jelly:core">
+
+    <ant:property environment="env"/>
+
+    <preGoal name="jar:jar">
+        <ant:mkdir dir="${basedir}/target/classes"/>
+        <ant:copy todir="${basedir}/target/classes/META-INF">
+            <fileset dir="${basedir}/target/src/META-INF">
+                <include name="**/*"/>
+            </fileset>
+        </ant:copy>
+    </preGoal>
+
+    <goal name="install" prereqs="jar:install">
+        <ant:move file="target/${pom.artifactId}${artifactIdSuffix}-${pom.currentVersion}.jar"
+            tofile="target/${pom.artifactId}${artifactIdSuffix}-${pom.currentVersion}.sar"/>
+        <ant:move file="${user.home}/.maven/repository/${pom.groupId}/jars/${pom.artifactId}${artifactIdSuffix}-${pom.currentVersion}.jar"
+                tofile="${user.home}/.maven/repository/${pom.groupId}/sars/${pom.artifactId}${artifactIdSuffix}-${pom.currentVersion}.sar"/>
+    </goal>
+
+    <j:set var="deployDirectory" value="${env.JBOSS_HOME}/server/${jboss.config}/deploy"/>
+    <goal name="deploy" prereqs="undeploy">
+        <ant:copy file="${user.home}/.maven/repository/${pom.groupId}/sars/${pom.artifactId}${artifactIdSuffix}-${pom.currentVersion}.sar"
+            tofile="${deployDirectory}/${pom.artifactId}-${pom.currentVersion}.sar"/>
+    </goal>
+
+    <goal name="undeploy">
+        <ant:delete includeEmptyDirs="true">
+            <ant:fileset dir="${deployDirectory}">
+                <ant:include name="${pom.artifactId}*.sar"/>
+            </ant:fileset>
+        </ant:delete>
+    </goal>
+
+    <goal name="lib">
+        <j:forEach var="dep" items="${pom.dependencies}">
+            <j:if test= "${dep.getProperty('application.dependency') == 'true'}">
+                <ant:delete includeEmptyDirs="false">
+                    <ant:fileset dir="${libDirectory}">
+                        <ant:include name="${dep.artifactId}*.${dep.type}"/>
+                    </ant:fileset>
+                </ant:delete>
+                <ant:copy todir="${libDirectory}">
+                    <fileset dir="${user.home}/.maven/repository/${dep.groupId}/${dep.type}s/">
+                        <include name="${dep.artifact}"/>
+                    </fileset>
+                </ant:copy>
+            </j:if>
+        </j:forEach>
+    </goal>
+
+    <goal name="earInstall">
+        <j:set var="earDirectory" value="${basedir}/../../../target/ear"/>
+
+        <j:if test="${packDependencies}">
+            <j:forEach var="dep" items="${pom.dependencies}">
+                <j:if test="${dep.getProperty('application.dependency') == 'true'}">
+                    <ant:copy todir="${earDirectory}">
+                        <fileset dir="${maven.repo.local}/${dep.groupId}/${dep.type}s/">
+                            <include name="${dep.artifact}" />
+                        </fileset>
+                    </ant:copy>
+                </j:if>
+            </j:forEach>
+        </j:if>
+
+        <ant:copy
+            file="${maven.repo.local}/${pom.groupId}/sars/${pom.artifactId}-${pom.currentVersion}.sar"
+            tofile="${earDirectory}/${pom.artifactId}-${pom.currentVersion}.sar"/>
+
+        <!-- Gera trecho do arquivo application.xml -->
+        <j:set var="earTempDirectory" value="${basedir}/../../../target/ear/temp"/>
+        <j:file name="${earTempDirectory}/ejb-modulo-initial.xml"
+            outputMode="xml"
+            omitXmlDeclaration="true"
+            escapeText="false"
+            trim="false"><![CDATA[
+    <module>
+        <ejb>${pom.artifactId}-${pom.CurrentVersion}.sar</ejb>
+    </module>]]></j:file>
+    </goal>
+
+    <!-- ==================================================================
+        Cleans Everything and deletes all implementation classes
+    ================================================================== -->
+    <goal name="nuke">
+        <ant:delete>
+            <fileset dir="src/java">
+                <include name="**/*Impl.java"/>
+            </fileset>
+        </ant:delete>
+        <attainGoal name="clean"/>
+    </goal>
+
+</project>

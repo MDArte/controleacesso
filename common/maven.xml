@@ -1,0 +1,86 @@
+<project default="jar:install"
+         xmlns:ant="jelly:ant"
+         xmlns:maven="jelly:maven"
+         xmlns:j="jelly:core">
+
+
+    <ant:property environment="env"/>
+    <j:set var="libDirectory" value="${env.JBOSS_HOME}/server/${jboss.config}/lib"/>
+
+    <goal name="lib">
+        <j:forEach var="dep" items="${pom.dependencies}">
+            <j:if test="${dep.getProperty('application.dependency') == 'true'}">
+                <ant:delete includeEmptyDirs="false">
+                    <ant:fileset dir="${libDirectory}">
+                        <ant:include name="${dep.artifactId}*.${dep.type}"/>
+                    </ant:fileset>
+                </ant:delete>
+                <ant:copy todir="${libDirectory}">
+                    <fileset dir="${user.home}/.maven/repository/${dep.groupId}/${dep.type}s/">
+                        <include name="${dep.artifact}"/>
+                    </fileset>
+                </ant:copy>
+            </j:if>
+        </j:forEach>
+    </goal>
+
+    <j:set var="deployDirectory" value="${env.JBOSS_HOME}/server/${jboss.config}/deploy"/>
+
+    <goal name="deploy" prereqs="undeploy">
+        <ant:copy file="${user.home}/.maven/repository/${pom.groupId}/jars/${pom.artifactId}-${pom.CurrentVersion}.jar"
+                tofile="${deployDirectory}/${pom.artifactId}-${pom.CurrentVersion}.jar"/>
+    </goal>
+
+    <goal name="undeploy">
+        <ant:delete includeEmptyDirs="true">
+            <ant:fileset dir="${deployDirectory}">
+                <ant:include name="${pom.artifactId}*.jar"/>
+            </ant:fileset>
+        </ant:delete>
+    </goal>
+
+    <goal name="earInstall">
+        <j:set var="earDirectory" value="${basedir}/../target/ear"/>
+        <j:if test="${packDependencies}">
+            <j:forEach var="dep" items="${pom.dependencies}">
+                <j:if test="${dep.getProperty('application.dependency') == 'true'}">
+                    <ant:copy todir="${earDirectory}">
+                        <fileset dir="${maven.repo.local}/${dep.groupId}/${dep.type}s/">
+                            <include name="${dep.artifact}" />
+                        </fileset>
+                    </ant:copy>
+                </j:if>
+            </j:forEach>
+        </j:if>
+        <ant:copy 
+                file="${maven.repo.local}/${pom.groupId}/jars/${pom.artifactId}-${pom.CurrentVersion}.jar"
+                tofile="${earDirectory}/${pom.artifactId}-${pom.CurrentVersion}.jar"/>
+    </goal>
+
+    <!-- ==================================================================
+           Shows help
+         ================================================================== -->
+    <goal name="help">
+        <ant:echo> 
+
+maven jar:install - Compila o conteudo da pasta common e gera o jar (e equivalente a executar um maven common na raiz, e o default desta pasta)
+
+maven deploy - Copia o jar do common para o seu JBoss
+
+maven clean - Apaga o conteudo da pasta target 
+
+        </ant:echo>
+    </goal>
+
+    <!-- ==================================================================
+        Cleans Everything and deletes all implementation classes
+    ================================================================== -->
+    <goal name="nuke">
+        <ant:delete>
+            <fileset dir="src/java">
+                <include name="**/*Impl.java"/>
+            </fileset>
+        </ant:delete>
+        <attainGoal name="clean"/>
+    </goal>
+</project>

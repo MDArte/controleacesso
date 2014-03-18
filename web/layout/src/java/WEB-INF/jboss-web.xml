@@ -1,0 +1,3 @@
+<jboss-web>
+	<context-root>/controleacesso/layout</context-root>
+</jboss-web>

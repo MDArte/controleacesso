@@ -1,0 +1,66 @@
+<project default="install"
+         xmlns:ant="jelly:ant"
+         xmlns:u="jelly:util"
+         xmlns:maven="jelly:maven"
+         xmlns:j="jelly:core">
+
+
+    <goal name="install">
+        <attainGoal name="multiproject:install"/>
+    </goal>
+
+    <ant:property environment="env"/>  
+    <j:set var="libDirectory" value="${env.JBOSS_HOME}/server/${jboss.config}/lib"/>
+
+    <goal name="lib">
+        <j:forEach var="dep" items="${pom.dependencies}">
+            <j:if test= "${dep.type == 'jar'}">
+                <j:if test= "${dep.groupId != pom.groupId}">
+                    <j:if test= "${dep.getProperty('war.manifest.classpath') == 'true'}">
+                        <ant:delete includeEmptyDirs="false">
+                            <ant:fileset dir="${libDirectory}">
+                                <ant:include name="${dep.artifactId}*.jar"/>
+                            </ant:fileset>
+                        </ant:delete>
+                        <ant:copy todir="${libDirectory}">
+                            <fileset dir="${user.home}/.maven/repository/${dep.groupId}/jars/">
+                                <include name="${dep.artifact}"/>
+                            </fileset>
+                        </ant:copy>
+                    </j:if>
+                </j:if>
+            </j:if>
+        </j:forEach>
+    </goal>
+
+    <!-- ==================================================================
+           Shows help
+         ================================================================== -->
+    <goal name="help">
+        <ant:echo> 
+
+maven install - Compila o conteudo da pasta web e gera os wars (e equivalente a executar um maven web na raiz, e o default desta pasta)
+
+maven deploy - Copia os wars do web para o seu JBoss
+
+maven clean - Apaga o conteudo da pasta target
+
+maven [NOME_DO_MODULO_WEB]:install - Compila o modulo web e gera o war
+
+maven [NOME_DO_MODULO_WEB]:deploy - Copia o war daquele modulo para o seu JBoss 
+
+        </ant:echo>
+    </goal>
+
+    <!-- ==================================================================
+           Cleans Everything and deletes all implementation classes
+         ================================================================== -->
+    <goal name="nuke">
+        <ant:delete>
+            <fileset dir="src/java">
+                <include name="**/*Impl.java"/>
+            </fileset>
+        </ant:delete>
+        <attainGoal name="clean"/>
+    </goal>
+</project>

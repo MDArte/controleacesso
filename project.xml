@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <artifactId>${application.id}</artifactId>
+    <groupId>${application.id}</groupId>
+    <name>The ${application.name}</name>
+    <currentVersion>${application.version}</currentVersion>
+    <shortDescription>The Controle de Acesso</shortDescription>
+    <description>
+        Contains the Controle de Acesso Project.
+    </description>
+    <package>${application.package}</package>
+    <developers>
+        <developer>
+              <name>MDArte</name>
+              <id></id>
+              <email></email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-interaction</artifactId>
+            <version>${commons.jelly.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jbosssx</artifactId>
+            <version>${jboss.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>common-classes</groupId>
+            <artifactId>CommonClasses</artifactId>
+            <version>${common.classes.version}</version>
+            <type>jar</type>
+            <properties>
+                <application.dependency>true</application.dependency>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
+        </dependency>
+				<dependency>
+			<groupId>ControleAcesso</groupId>
+			<artifactId>ControleAcesso-dominio-core</artifactId>
+			<version>${controle.acesso.version}</version>
+    		<properties>
+    			<ejb.manifest.classpath>false</ejb.manifest.classpath>
+    		</properties>
+    		<type>jar</type>
+		</dependency>
+    	<dependency>
+    		<groupId>ControleAcesso</groupId>
+    		<artifactId>ControleAcesso-common</artifactId>
+    		<version>${controle.acesso.version}</version>
+    		<type>jar</type>
+    		<properties>
+    			<ejb.manifest.classpath>true</ejb.manifest.classpath>
+    		</properties>
+    	</dependency>
+    	<dependency> 
+            <groupId>ControleAcesso</groupId>
+            <artifactId>ControleAcesso-compartilhado</artifactId>
+            <version>${controle.acesso.version}</version>
+            <type>ejb</type>
+            <properties>
+      			<ejb.manifest.classpath>true</ejb.manifest.classpath>
+  			</properties>
+  		</dependency>
+    	    </dependencies>
+</project>

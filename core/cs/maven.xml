@@ -1,0 +1,99 @@
+<project default="install"
+         xmlns:ant="jelly:ant"
+         xmlns:maven="jelly:maven"
+         xmlns:j="jelly:core"
+         xmlns:u="jelly:util">
+
+
+    <goal name="install">
+        <attainGoal name="multiproject:install"/>
+    </goal>
+
+
+    <preGoal name="ejb:init">
+        <ant:property name="core.dir" value="${var1}${var2}"/>
+
+        <ant:path id="core.classpath">
+            <ant:path refid="maven.dependency.classpath"/>
+            <ant:path location="${maven.build.dest}"/>
+        </ant:path>
+
+        <ant:mkdir dir="${core.dir}/target/classes"/>
+        <ant:mkdir dir="${core.dir}/src/java"/>
+        <ant:mkdir dir="${core.dir}/target/src"/>
+
+        <ant:path id="compile.ws">
+            <ant:pathelement path="${core.dir}/target/src"/>
+            <ant:pathelement path="${core.dir}/src/java"/>
+        </ant:path>
+
+        <ant:javac srcdir="${core.dir}" destdir="${core.dir}/target/classes" includes="**/*.java" excludes="**/*BeanImpl.java" debug="on">
+            <ant:classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+            </ant:classpath>
+        </ant:javac>
+
+
+        <ant:javac srcdir="${core.dir}/src" destdir="${core.dir}/target/classes" includes="**/*BeanImpl.java" debug="on">
+            <ant:classpath>
+                <ant:path refid="maven.dependency.classpath"/>
+            </ant:classpath>
+        </ant:javac>
+
+        <ant:copy todir="${core.dir}/target/classes/">
+            <ant:fileset dir="${core.dir}/target/src/" excludes="**/*.java"/>
+        </ant:copy>
+    </preGoal>
+
+    <ant:property environment="env"/>
+
+    <j:set var="libDirectory" value="${env.JBOSS_HOME}/server/${jboss.config}/lib"/>
+
+    <goal name="lib">
+        <j:forEach var="dep" items="${pom.dependencies}">
+            <j:if test= "${dep.type == 'jar'}">
+                <j:if test= "${dep.groupId != pom.groupId}">
+                    <j:if test= "${dep.getProperty('ejb.manifest.classpath') == 'true'}">
+                        <ant:delete includeEmptyDirs="false">
+                            <ant:fileset dir="${libDirectory}">
+                                <ant:include name="${dep.artifactId}*.jar"/>
+                            </ant:fileset>
+                        </ant:delete>
+                        <ant:copy todir="${libDirectory}">
+                            <fileset dir="${user.home}/.maven/repository/${dep.groupId}/jars/">
+                                <include name="${dep.artifact}"/>
+                            </fileset>
+                        </ant:copy>
+                    </j:if>
+                </j:if>
+            </j:if>
+        </j:forEach>
+    </goal>
+
+    <!-- ==================================================================
+           Shows help
+         ================================================================== -->
+    <goal name="help">
+        <ant:echo>
+
+maven install - Compila o conteudo desta pasta e gera o jar (e o default desta pasta)
+
+maven deploy - Copia o jar desta pasta para o seu JBoss
+
+maven clean - Apaga o conteudo da pasta target 
+
+        </ant:echo>
+    </goal>
+
+    <!-- ==================================================================
+           Cleans Everything and deletes all implementation classes
+         ================================================================== -->
+    <goal name="nuke">
+        <attainGoal name="clean"/>
+        <ant:delete>
+            <fileset dir="src/java">
+                <include name="**/*Impl.java"/>
+            </fileset>
+        </ant:delete>
+    </goal>
+</project>
