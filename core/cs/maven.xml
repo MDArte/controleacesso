@@ -1,49 +1,98 @@
 <project default="install"
          xmlns:ant="jelly:ant"
+         xmlns:u="jelly:util"
          xmlns:maven="jelly:maven"
-         xmlns:j="jelly:core"
-         xmlns:u="jelly:util">
+         xmlns:j="jelly:core">
 
 
     <goal name="install">
         <attainGoal name="multiproject:install"/>
+        <attainGoal name="initial:install"/>
     </goal>
 
+    <goal name="deploy">
+        <j:set var="goal" value="deploy"/>
+        <attainGoal name="multiproject:goal"/>
+        <attainGoal name="initial:deploy"/>
+    </goal>
 
-    <preGoal name="ejb:init">
-        <ant:property name="core.dir" value="${var1}${var2}"/>
+    <goal name="undeploy">
+        <j:set var="goal" value="undeploy"/>
+        <attainGoal name="multiproject:goal"/>
+        <attainGoal name="initial:undeploy"/>
+    </goal>
 
-        <ant:path id="core.classpath">
-            <ant:path refid="maven.dependency.classpath"/>
-            <ant:path location="${maven.build.dest}"/>
-        </ant:path>
+    <goal name="compartilhado:install">
+        <maven:maven
+            descriptor="${basedir}/compartilhado/project.xml"
+            goals="ejb:install"/>
+    </goal>
 
-        <ant:mkdir dir="${core.dir}/target/classes"/>
-        <ant:mkdir dir="${core.dir}/src/java"/>
-        <ant:mkdir dir="${core.dir}/target/src"/>
+    <goal name="compartilhado:lib">
+        <maven:maven
+            descriptor="${basedir}/compartilhado/project.xml"
+            goals="lib"/>
+    </goal>
 
-        <ant:path id="compile.ws">
-            <ant:pathelement path="${core.dir}/target/src"/>
-            <ant:pathelement path="${core.dir}/src/java"/>
-        </ant:path>
+    <goal name="compartilhado:deploy">
+        <maven:maven
+            descriptor="${basedir}/compartilhado/project.xml"
+            goals="deploy"/>
+    </goal>
 
-        <ant:javac srcdir="${core.dir}" destdir="${core.dir}/target/classes" includes="**/*.java" excludes="**/*BeanImpl.java" debug="on">
-            <ant:classpath>
-                <ant:path refid="maven.dependency.classpath"/>
-            </ant:classpath>
-        </ant:javac>
+    <goal name="compartilhado:undeploy">
+        <maven:maven
+            descriptor="${basedir}/compartilhado/project.xml"
+            goals="undeploy"/>
+    </goal>
 
+    <goal name="shared:install">
+        <maven:maven
+            descriptor="${basedir}/shared/project.xml"
+            goals="ejb:install"/>
+    </goal>
 
-        <ant:javac srcdir="${core.dir}/src" destdir="${core.dir}/target/classes" includes="**/*BeanImpl.java" debug="on">
-            <ant:classpath>
-                <ant:path refid="maven.dependency.classpath"/>
-            </ant:classpath>
-        </ant:javac>
+    <goal name="shared:lib">
+        <maven:maven
+            descriptor="${basedir}/shared/project.xml"
+            goals="lib"/>
+    </goal>
 
-        <ant:copy todir="${core.dir}/target/classes/">
-            <ant:fileset dir="${core.dir}/target/src/" excludes="**/*.java"/>
-        </ant:copy>
-    </preGoal>
+    <goal name="shared:deploy">
+        <maven:maven
+            descriptor="${basedir}/shared/project.xml"
+            goals="deploy"/>
+    </goal>
+
+    <goal name="shared:undeploy">
+        <maven:maven
+            descriptor="${basedir}/shared/project.xml"
+            goals="undeploy"/>
+    </goal>
+
+    <goal name="initial:install">
+        <maven:maven
+            descriptor="${basedir}/initial/project.xml"
+            goals="install"/>
+    </goal>
+
+    <goal name="initial:lib">
+        <maven:maven
+            descriptor="${basedir}/initial/project.xml"
+            goals="lib"/>
+    </goal>
+
+    <goal name="initial:deploy">
+        <maven:maven
+            descriptor="${basedir}/initial/project.xml"
+            goals="deploy"/>
+    </goal>
+
+    <goal name="initial:undeploy">
+        <maven:maven
+            descriptor="${basedir}/initial/project.xml"
+            goals="undeploy"/>
+    </goal>
 
     <ant:property environment="env"/>
 
@@ -51,34 +100,30 @@
 
     <goal name="lib">
         <j:forEach var="dep" items="${pom.dependencies}">
-            <j:if test= "${dep.type == 'jar'}">
-                <j:if test= "${dep.groupId != pom.groupId}">
-                    <j:if test= "${dep.getProperty('ejb.manifest.classpath') == 'true'}">
-                        <ant:delete includeEmptyDirs="false">
-                            <ant:fileset dir="${libDirectory}">
-                                <ant:include name="${dep.artifactId}*.jar"/>
-                            </ant:fileset>
-                        </ant:delete>
-                        <ant:copy todir="${libDirectory}">
-                            <fileset dir="${user.home}/.maven/repository/${dep.groupId}/jars/">
-                                <include name="${dep.artifact}"/>
-                            </fileset>
-                        </ant:copy>
-                    </j:if>
-                </j:if>
+            <j:if test= "${dep.getProperty('application.dependency') == 'true'}">
+                <ant:delete includeEmptyDirs="false">
+                    <ant:fileset dir="${libDirectory}">
+                        <ant:include name="${dep.artifactId}*.${dep.type}"/>
+                    </ant:fileset>
+                </ant:delete>
+                <ant:copy todir="${libDirectory}">
+                    <fileset dir="${user.home}/.maven/repository/${dep.groupId}/${dep.type}s/">
+                        <include name="${dep.artifact}"/>
+                    </fileset>
+                </ant:copy>
             </j:if>
         </j:forEach>
     </goal>
 
     <!-- ==================================================================
-           Shows help
-         ================================================================== -->
+       Shows help
+     ================================================================== -->
     <goal name="help">
-        <ant:echo>
+        <ant:echo> 
 
-maven install - Compila o conteudo desta pasta e gera o jar (e o default desta pasta)
+maven install - Compila o conteudo desta pasta e gera os jars (e o default desta pasta)
 
-maven deploy - Copia o jar desta pasta para o seu JBoss
+maven deploy - Copia os jars desta pasta para o seu JBoss
 
 maven clean - Apaga o conteudo da pasta target 
 
@@ -87,13 +132,12 @@ maven clean - Apaga o conteudo da pasta target
 
     <!-- ==================================================================
            Cleans Everything and deletes all implementation classes
-         ================================================================== -->
+    ================================================================== -->
     <goal name="nuke">
+        <ant:echo>Nuking source code...</ant:echo>
+        <j:set var="goal" value="nuke"/>
+        <attainGoal name="multiproject:goal"/>
         <attainGoal name="clean"/>
-        <ant:delete>
-            <fileset dir="src/java">
-                <include name="**/*Impl.java"/>
-            </fileset>
-        </ant:delete>
+        <ant:echo>Finished nuke.</ant:echo>
     </goal>
 </project>

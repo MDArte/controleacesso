@@ -2,33 +2,139 @@
          xmlns:ant="jelly:ant"
          xmlns:u="jelly:util"
          xmlns:maven="jelly:maven"
-         xmlns:j="jelly:core">
+         xmlns:j="jelly:core"
+         xmlns:i="jelly:interaction">
 
 
     <goal name="install">
-        <attainGoal name="multiproject:install"/>
+        <j:set var="goal" value="install"/>
+        <attainGoal name="multiproject:goal"/>
     </goal>
 
-    <ant:property environment="env"/>  
+    <postGoal name="clean:clean">
+        <u:available file="${basedir}/../modelo/compartilhado/target">
+            <ant:delete dir="${basedir}/../modelo/compartilhado/target"/>
+        </u:available>
+    </postGoal>
+
+    <goal name="deploy">
+        <j:set var="goal" value="deploy"/>
+        <attainGoal name="multiproject:goal"/>
+    </goal>
+
+    <goal name="undeploy">
+        <j:set var="goal" value="undeploy"/>
+        <attainGoal name="multiproject:goal"/>
+    </goal>
+
+    <goal name = "help:install">
+        <u:available file="${basedir}/help">
+        <maven:maven
+           descriptor="${basedir}/help/project.xml"
+           goals="help:install"/>
+        </u:available>
+    </goal>
+
+    <goal name = "help:deploy">
+        <u:available file="${basedir}/help">
+        <maven:maven
+           descriptor="${basedir}/help/project.xml"
+           goals="deploy"/>
+        </u:available>
+    </goal> 
+
+    <goal name = "help:undeploy">
+        <u:available file="${basedir}/help">
+        <maven:maven
+           descriptor="${basedir}/help/project.xml"
+           goals="undeploy"/>
+        </u:available>
+    </goal>
+
+    <goal name = "layout:install">
+        <u:available file="${basedir}/layout">
+        <maven:maven
+           descriptor="${basedir}/layout/project.xml"
+           goals="layout:install"/>
+        </u:available>
+    </goal>
+
+    <goal name = "layout:deploy">
+        <u:available file="${basedir}/layout">
+        <maven:maven
+           descriptor="${basedir}/layout/project.xml"
+           goals="deploy"/>
+        </u:available>
+    </goal> 
+
+    <goal name = "layout:undeploy">
+        <u:available file="${basedir}/layout">
+        <maven:maven
+           descriptor="${basedir}/layout/project.xml"
+           goals="undeploy"/>
+        </u:available>
+    </goal>
+
+    <goal name = "test:install">
+        <u:available file="${basedir}/test">
+            <maven:maven
+                descriptor="${basedir}/test/project.xml"
+                goals="jar:install"/>
+        </u:available>
+    </goal>
+
+    <goal name = "test:deploy">
+        <u:available file="${basedir}/test">
+            <maven:maven
+                descriptor="${basedir}/test/project.xml"
+                goals="testDeploy"/>
+        </u:available>
+    </goal> 
+
+    <goal name = "test:undeploy">
+        <u:available file="${basedir}/test">
+            <maven:maven
+                descriptor="${basedir}/test/project.xml"
+                goals="testUndeploy"/>
+        </u:available>
+    </goal>
+
+    <goal name="principal:install">
+        <maven:maven
+            descriptor="${basedir}/principal/project.xml"
+            goals="principal:install"/>
+    </goal>
+
+    <goal name="principal:lib">
+        <maven:maven
+            descriptor="${basedir}/principal/project.xml"
+            goals="lib"/>
+    </goal>
+
+    <goal name="principal:deploy">
+        <maven:maven
+            descriptor="${basedir}/principal/project.xml"
+            goals="deploy"/>
+    </goal>
+
+
+    <ant:property environment="env"/>
+
     <j:set var="libDirectory" value="${env.JBOSS_HOME}/server/${jboss.config}/lib"/>
 
     <goal name="lib">
         <j:forEach var="dep" items="${pom.dependencies}">
-            <j:if test= "${dep.type == 'jar'}">
-                <j:if test= "${dep.groupId != pom.groupId}">
-                    <j:if test= "${dep.getProperty('war.manifest.classpath') == 'true'}">
-                        <ant:delete includeEmptyDirs="false">
-                            <ant:fileset dir="${libDirectory}">
-                                <ant:include name="${dep.artifactId}*.jar"/>
-                            </ant:fileset>
-                        </ant:delete>
-                        <ant:copy todir="${libDirectory}">
-                            <fileset dir="${user.home}/.maven/repository/${dep.groupId}/jars/">
-                                <include name="${dep.artifact}"/>
-                            </fileset>
-                        </ant:copy>
-                    </j:if>
-                </j:if>
+            <j:if test= "${dep.getProperty('application.dependency') == 'true'}">
+                <ant:delete includeEmptyDirs="false">
+                    <ant:fileset dir="${libDirectory}">
+                        <ant:include name="${dep.artifactId}*.${dep.type}"/>
+                    </ant:fileset>
+                </ant:delete>
+                <ant:copy todir="${libDirectory}">
+                    <fileset dir="${user.home}/.maven/repository/${dep.groupId}/${dep.type}s/">
+                        <include name="${dep.artifact}"/>
+                    </fileset>
+                </ant:copy>
             </j:if>
         </j:forEach>
     </goal>
@@ -39,15 +145,11 @@
     <goal name="help">
         <ant:echo> 
 
-maven install - Compila o conteudo da pasta web e gera os wars (e equivalente a executar um maven web na raiz, e o default desta pasta)
+maven install - Compila o conteudo desta pasta web e gera o war (e o equivalente ao maven web na raiz, e o default desta pasta)
 
-maven deploy - Copia os wars do web para o seu JBoss
+maven deploy - Copia os war desta pasta para o seu JBoss
 
 maven clean - Apaga o conteudo da pasta target
-
-maven [NOME_DO_MODULO_WEB]:install - Compila o modulo web e gera o war
-
-maven [NOME_DO_MODULO_WEB]:deploy - Copia o war daquele modulo para o seu JBoss 
 
         </ant:echo>
     </goal>
@@ -57,10 +159,12 @@ maven [NOME_DO_MODULO_WEB]:deploy - Copia o war daquele modulo para o seu JBoss
          ================================================================== -->
     <goal name="nuke">
         <ant:delete>
-            <fileset dir="src/java">
+            <fileset dir="modelo/compartilhado/src/java">
                 <include name="**/*Impl.java"/>
             </fileset>
         </ant:delete>
+        <j:set var="goal" value="nuke"/>
+        <attainGoal name="multiproject:goal"/>
         <attainGoal name="clean"/>
     </goal>
 </project>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>../project.xml</extend>
+    <artifactId>${pom.groupId}-principal-web</artifactId>
+    <name>${projectName} principal Web</name>
+    <currentVersion>${application.version}</currentVersion>
+    <shortDescription>${pom.name} principal Web Component</shortDescription>
+    <description>
+        Contains the ${pom.name}-principal's web module.
+    </description>
+</project>
