@@ -17,6 +17,7 @@
     <classpathentry kind="var" path="MAVEN_REPO/commons-validator/jars/commons-validator-1.3.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/json/jars/json-simple-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/common-classes/jars/CommonClasses-1.3-RC3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/security/jars/security-1.1.3-RC1.jar"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>

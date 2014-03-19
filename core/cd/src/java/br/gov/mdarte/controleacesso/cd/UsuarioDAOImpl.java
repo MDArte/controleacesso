@@ -17,6 +17,10 @@ package br.gov.mdarte.controleacesso.cd;
  * </p>
  * @see br.gov.mdarte.controleacesso.cd.Usuario
  */
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 import br.gov.mdarte.controleacesso.cd.DAOException;
 import br.ufrj.coppetec.DataObject; 
  
@@ -31,4 +35,11 @@ public class UsuarioDAOImpl extends UsuarioDAO {
 	return null;
     }
 
+	@Override
+	protected Object handleRecuperarUsuario(Session session, String login) throws DAOException {
+		Criteria criterios = session.createCriteria(Usuario.class);
+		criterios.add(Restrictions.eq("login", login));
+		
+		return criterios;
+	}
 }

@@ -8,6 +8,8 @@
 #MDA
 /mda/src/uml/*.mdr
 /mda/src/uml/*.xml.bak
+/mda/src/uml/*/*.mdr
+/mda/src/uml/*/*.xml.bak
 
 #Serviços
 /core/cs/maven.xml

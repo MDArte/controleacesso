@@ -31,20 +31,19 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	 */
 	@Override
 	public accessControl.Operador getOperador(String usuario) throws ControleAcessoException{
-		OperadorCA operador = new OperadorCAImpl();
-		operador.setLogin(usuario);
-		OperadorCADAOImpl opDAO = new OperadorCADAOImpl();
+		
+		UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
+		
 		try
 		{
-			return (accessControl.Operador)
-					opDAO.recuperaOperador(usuario,
-							null).iterator().next(); //trocar para filter?
+			return (accessControl.Operador) usuarioDAO.recuperarUsuario(usuario);
 		}
 		catch (br.gov.mdarte.controleacesso.cd.DAOException e)
 		{
 			throw new ControleAcessoException(e.getMessage());
 		}
 	}
+	/*
 	private HashMap<String, Collection<Perfil>> addServices(HashMap<String,Collection<Perfil>> hmServicos, ServicoCA servico, Collection<Perfil> perfis)
 	{
 		if (hmServicos.get(servico.getCodigo()) != null)
@@ -63,6 +62,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 		}
 		return hmServicos;
 	}
+	*/
 
 	/**
 	 * lista os servicos em um map onde a chave eh o nome do servico e o valor a colecao de perfis que possui acesso ao servico
@@ -71,7 +71,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	public java.util.HashMap<String, java.util.Collection<accessControl.Perfil>> listaServicos() throws ControleAcessoException {
 		HashMap<String, Collection<Perfil>> hmServicos = new
 				HashMap<String, Collection<Perfil>>();
-		ServicoCADAOImpl servDAO = new ServicoCADAOImpl();
+		/*ServicoCADAOImpl servDAO = new ServicoCADAOImpl();
 		List serviceList =
 				new ArrayList();
 		try
@@ -101,6 +101,8 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 						perfilList);
 		}
 		return hmServicos;
+		*/
+		return null;
 	}	
 
 	/**
@@ -108,6 +110,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	 */
 	@Override
 	public boolean trocaSenha(accessControl.Operador operador, String senhaAtual, String novaSenha) throws ControleAcessoException{
+		/*
 		OperadorCADAOImpl opDAO = new OperadorCADAOImpl();
 		OperadorCAImpl opRetrieved;
 		OperadorCAImpl op = (OperadorCAImpl) operador;
@@ -128,7 +131,8 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 			return false;
 		}
 		return true;
-		
+		*/
+		return true;
 	}	
 
 	/**
