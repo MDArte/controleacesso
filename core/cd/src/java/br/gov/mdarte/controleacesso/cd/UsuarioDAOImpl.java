@@ -17,6 +17,8 @@ package br.gov.mdarte.controleacesso.cd;
  * </p>
  * @see br.gov.mdarte.controleacesso.cd.Usuario
  */
+import java.util.Collection;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -40,6 +42,11 @@ public class UsuarioDAOImpl extends UsuarioDAO {
 		Criteria criterios = session.createCriteria(Usuario.class);
 		criterios.add(Restrictions.eq("login", login));
 		
-		return criterios;
+		Collection usuarios = criterios.list();
+		
+		if(usuarios != null && !usuarios.isEmpty())
+			return usuarios.iterator().next();
+		
+		return null;
 	}
 }

@@ -102,7 +102,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 		}
 		return hmServicos;
 		*/
-		return null;
+		return hmServicos;
 	}	
 
 	/**
