@@ -79,7 +79,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 			// recupera os perfils supers do sistema
 			superPerfils = (ArrayList<Long>) perfilDAO.recuperarSuperPerfil(Constantes.SISTEMA, null);
 			
-			// recupera todos os serviços
+			// recupera todos os servicos
 			acaoList = (List) acaoDAO.recuperarAcoes(Constantes.SISTEMA, null);
 		} catch(br.gov.mdarte.controleacesso.cd.DAOException exception) {
 			throw new ControleAcessoException(exception);
@@ -139,7 +139,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	}	
 
 	/**
-	 * Bloqueia o acesso do usuário
+	 * Bloqueia o acesso do usuario
 	 */
 	@Override
 	public void bloqueiaUsuario(String usuario) {
@@ -147,7 +147,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	}		
 
 	/**
-	 * Verifica se o acesso do usuário está bloqueado
+	 * Verifica se o acesso do usuario esta bloqueado
 	 */
 	@Override
 	public boolean usuarioBloqueado(String usuario) {
@@ -155,7 +155,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	}	
 
 	/**
-	 * Verifica se a senha é fraca
+	 * Verifica se a senha e fraca
 	 */
 	@Override
 	public boolean senhaFraca(String senha) {
@@ -163,8 +163,8 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 		/* IMPLEMENTACAO SUGERIDA
 		 *
 		 * (a senha deve possuir pelo menos 8 caracteres,
-		 * incluindo numerais, letras maiúsculas,
-		 * letras minúsculas e símbolos)
+		 * incluindo numerais, letras maiï¿½sculas,
+		 * letras minï¿½sculas e sï¿½mbolos)
 		 */
 		 
 		if (senha == null) {
