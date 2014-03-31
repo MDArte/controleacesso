@@ -17,15 +17,10 @@ package br.gov.mdarte.controleacesso.cd;
  * </p>
  * @see br.gov.mdarte.controleacesso.cd.Acao
  */
-import java.util.Collection;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
 
-import br.gov.mdarte.controleacesso.cd.DAOException;
-import br.ufrj.coppetec.DataObject; 
+import br.ufrj.coppetec.DataObject;
  
 public class AcaoDAOImpl extends AcaoDAO {
 
@@ -43,13 +38,9 @@ public class AcaoDAOImpl extends AcaoDAO {
     }
     
     @Override
-    protected Object handleRecuperarAcoes(Session session, String sistema) throws DAOException {
+    protected Object handleRecuperarAcoes(Session session) throws DAOException {
 		Criteria criterios = session.createCriteria(AcaoImpl.class);
-		criterios.createAlias("sistema", "sistema");
-		
-		if(sistema != null)
-			criterios.add(Restrictions.eq("sistema.nome", sistema));
-		
+	
 		return criterios;
 	}
 

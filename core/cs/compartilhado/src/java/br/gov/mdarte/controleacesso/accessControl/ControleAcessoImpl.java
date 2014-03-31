@@ -83,7 +83,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 			superPerfils = (ArrayList<Long>) perfilDAO.recuperarSuperPerfil(Constantes.SISTEMA, null);
 			
 			// recupera todos os servicos
-			acaoList = (List) acaoDAO.recuperarAcoes(Constantes.SISTEMA, null);
+			acaoList = (List) acaoDAO.recuperarAcoes(null);
 		} catch(br.gov.mdarte.controleacesso.cd.DAOException exception) {
 			throw new ControleAcessoException(exception);
 		}
