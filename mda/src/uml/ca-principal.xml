@@ -245,7 +245,7 @@
 							<selectionMode xmi.value='0'/>
 						</mdElement>
 						<mdElement elementClass='FileProperty'>
-							<value>/home/filipebraida/Work/workspace/ControleAcesso/mda/src/uml/xml.zips</value>
+							<value>&lt;project.dir&gt;/principal</value>
 							<selectionMode xmi.value='0'/>
 						</mdElement>
 						<value xmi.value='true'/>
