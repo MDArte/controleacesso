@@ -54,7 +54,7 @@ Main() {
 			DoTask undeploy $* ;;
 		"-a" | "--all")
 			shift ;
-			All "core" "principal" ;;
+			All "core" "principal" "administracao";;
 		"--clean")
 			shift ;
 			echo "" ;
@@ -89,6 +89,7 @@ Help() {
 	echo "\t core (inclui subdiretorios e common)"
 	echo "\t geral"
 	echo "\t principal (inclui layout)"
+	echo "\t administracao"
 	echo ""
 	echo "[lista de objetivos para -c -d -u]"
 	echo "\t common"
@@ -98,6 +99,7 @@ Help() {
 	echo "\t core-servicos"
 	echo "\t layout"
 	echo "\t principal (inclui layout)"
+	echo "\t administracao"
 	echo ""
 }
 
@@ -169,6 +171,9 @@ DoTask() {
 			"principal")
 				CompileWebTarget $1 $task layout
 				CompileWebTarget $1 $task principal
+				;;
+			"administracao")
+				CompileWebTarget $1 $task administracao
 				;;
 			*) ;;
 		esac
@@ -281,6 +286,7 @@ CheckModuleModelList() {
 			"bpm") ;;
 			"core") ;;
 			"principal") ;;
+			"administracao") ;;
 			*)
 				Help $module;
 				exit 1;;
@@ -298,6 +304,7 @@ CheckModuleCompileList() {
 			"core-only") ;;
 			"core-servicos") ;;
 			"principal") ;;
+			"administracao") ;;
 			"layout") ;;
 			*)
 				Help $module;

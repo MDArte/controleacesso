@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>../project.xml</extend>
+    <artifactId>${pom.groupId}-administracao-web</artifactId>
+    <name>${projectName} administracao Web</name>
+    <currentVersion>${application.version}</currentVersion>
+    <shortDescription>${pom.name} administracao Web Component</shortDescription>
+    <description>
+        Contains the ${pom.name}-administracao's web module.
+    </description>
+</project>
