@@ -87,8 +87,6 @@ Help() {
 	echo ""
 	echo "[lista de objetivos para -m -t]"
 	echo "\t core (inclui subdiretorios e common)"
-	echo "\t operador"
-	echo "\t sistema"
 	echo "\t geral"
 	echo "\t principal (inclui layout)"
 	echo ""
@@ -97,12 +95,8 @@ Help() {
 	echo "\t core (common + core)"
 	echo "\t core-cd"
 	echo "\t core-only"
-	echo "\t core-operador"
-	echo "\t core-sistema"
+	echo "\t core-servicos"
 	echo "\t layout"
-	echo "\t operador"
-	echo "\t sistema"
-	echo "\t geral"
 	echo "\t principal (inclui layout)"
 	echo ""
 }
@@ -166,6 +160,9 @@ DoTask() {
 			"core-only")
 				CompileCoreTarget $task core
 				;;
+			"core-servicos")
+				CompileCoreTarget $task core-servicos
+				;;
 			"layout")
 				CompileWebTarget $1 $task layout
 				;;
@@ -225,6 +222,9 @@ CompileCoreTarget() {
 					maven undeploy >> "${MAVEX_LOG}"
 				fi
 				CheckError ${1} "./core/cd" $?
+				;;
+			"core-servicos")
+				CompileCoreEjbTarget $1 $task servicos
 				;;
 			*) ;;
 		esac
@@ -296,6 +296,7 @@ CheckModuleCompileList() {
 			"core") ;;
 			"core-cd") ;;
 			"core-only") ;;
+			"core-servicos") ;;
 			"principal") ;;
 			"layout") ;;
 			*)
