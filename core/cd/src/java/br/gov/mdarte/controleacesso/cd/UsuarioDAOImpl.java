@@ -21,7 +21,6 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
 import br.gov.mdarte.controleacesso.util.Util;
@@ -40,7 +39,7 @@ public class UsuarioDAOImpl extends UsuarioDAO {
 			UsuarioVO usuarioVO = (UsuarioVO) vo;
 			
 			if(!Util.checkEmpty(usuarioVO.getLoginExato())) {
-				criterios.add(Restrictions.ilike("login", usuarioVO.getLoginExato(),MatchMode.EXACT));
+				criterios.add(Restrictions.eq("login", usuarioVO.getLoginExato()));
 			}
 		}
 

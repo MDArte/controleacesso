@@ -30,13 +30,32 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 
+import br.gov.mdarte.controleacesso.util.Util;
+import br.gov.mdarte.controleacesso.vo.PerfilVO;
 import br.ufrj.coppetec.DataObject;
  
 public class PerfilDAOImpl extends PerfilDAO {
 
 
     protected Object handleFilter(DataObject vo) throws br.gov.mdarte.controleacesso.cd.DAOException {		
-       return null;
+    	
+    	Session session = AbstractDAO.currentSession();
+    	Criteria criterios = session.createCriteria(UsuarioImpl.class);
+    	
+    	if(vo instanceof PerfilVO) {
+    		PerfilVO perfilVO = (PerfilVO) vo;
+			
+			if(!Util.checkEmpty(perfilVO.getNome())) {
+				criterios.add(Restrictions.eq("nome", perfilVO.getNome()));
+			}
+			
+			if(!Util.checkEmpty(perfilVO.getSistema())) {
+				criterios.createCriteria("sistema");
+				criterios.add(Restrictions.eq("sistema.nome", perfilVO.getNome()));
+			}
+		}
+
+		return criterios;
     }
     
     protected org.hibernate.Criteria handleXmlExport(br.ufrj.coppetec.ValueObject vo, org.hibernate.Session session) throws br.gov.mdarte.controleacesso.cd.DAOException {

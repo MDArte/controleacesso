@@ -2,30 +2,53 @@
 package br.gov.mdarte.controleacesso.cs.servicos;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import br.gov.mdarte.controleacesso.action.FilterAction;
 import br.gov.mdarte.controleacesso.action.InsertAction;
-import br.gov.mdarte.controleacesso.cd.DAOException;
+import br.gov.mdarte.controleacesso.action.UpdateAction;
 import br.gov.mdarte.controleacesso.cd.Perfil;
+import br.gov.mdarte.controleacesso.cd.PerfilImpl;
 import br.gov.mdarte.controleacesso.cd.Usuario;
-import br.gov.mdarte.controleacesso.cd.UsuarioDAO;
-import br.gov.mdarte.controleacesso.cd.UsuarioDAOImpl;
 import br.gov.mdarte.controleacesso.cd.UsuarioImpl;
 import br.gov.mdarte.controleacesso.util.Util;
+import br.gov.mdarte.controleacesso.vo.PerfilVO;
 import br.gov.mdarte.controleacesso.vo.UsuarioVO;
 
 /**
  * @see br.gov.mdarte.controleacesso.cs.servicos.ServicosHandler
  */
 public class ServicosHandlerBeanImpl extends ServicosHandlerBean implements ServicosHandler, ServicosHandlerLocal {
-
-	public void handleIncluirUsuario(java.lang.String login, java.lang.String senha, java.lang.String email) throws ServicosHandlerException {
+	
+	private Usuario recuperaUsuario(String login) {
+		UsuarioVO usuarioVO = new UsuarioVO();
+		usuarioVO.setLoginExato(login);
 		
-		if (verificarLogin(login)) {
-			throw new ServicosHandlerException("erro.servicos.handler.criar.usuario.login.vazio");
+		Collection usuarios = manipulaUsuario(new UsuarioImpl(), new FilterAction(usuarioVO, null));
+		
+		if(Util.checkEmpty(usuarios)) {
+			return null;
 		}
+		
+		return (Usuario) usuarios.iterator().next();
+	}
+	
+	private Perfil recuperaPerfil(String perfil, String sistema) {
+		PerfilVO perfilVO = new PerfilVO();
+		perfilVO.setNome(perfil);
+		perfilVO.setSistema(sistema);
+		
+		Collection perfils = manipulaPerfil(new PerfilImpl(), new FilterAction(perfilVO, null));
+		
+		if(Util.checkEmpty(perfils)) {
+			return null;
+		}
+		
+		return (Perfil) perfils.iterator().next();
+	}
+	
+	public void handleIncluirUsuario(java.lang.String login, java.lang.String senha, java.lang.String email) throws ServicosHandlerException {
 		
 		if(Util.checkEmpty(login))
 			throw new ServicosHandlerException("erro.servicos.handler.criar.usuario.login.vazio");
@@ -33,6 +56,10 @@ public class ServicosHandlerBeanImpl extends ServicosHandlerBean implements Serv
 			throw new ServicosHandlerException("erro.servicos.handler.criar.usuario.senha.vazio");
 		if(Util.checkEmpty(email))
 			throw new ServicosHandlerException("erro.servicos.handler.criar.usuario.email.vazia");
+		
+		if (verificarLogin(login)) {
+			throw new ServicosHandlerException("erro.servicos.handler.criar.usuario.login.vazio");
+		}
 		
 		UsuarioImpl usuario;
 		
@@ -50,33 +77,44 @@ public class ServicosHandlerBeanImpl extends ServicosHandlerBean implements Serv
 		if(Util.checkEmpty(login))
 			throw new ServicosHandlerException("erro.servicos.handler.verifica.login.login.vazio");
 		
-		UsuarioVO usuarioVO = new UsuarioVO();
-		usuarioVO.setLoginExato(login);
+		Usuario usuario = recuperaUsuario(login);
 		
-		Collection usuarios = manipulaUsuario(new UsuarioImpl(), new FilterAction(usuarioVO, null));
-		
-		if(Util.checkEmpty(usuarios)) {
+		if(usuario == null) {
 			return false;
 		}
 		
 		return true;
 	}
-
+	
 	@Override
-	public void handleAdicionarPerfil(Usuario usuario, Perfil perfil) throws ServicosHandlerException {
-		UsuarioDAO usrDAO = new UsuarioDAOImpl();
-		UsuarioImpl usr = (UsuarioImpl) usuario;
-		Collection perfils = usr.getPerfils();
-		perfils.add(perfil);
-		usr.setPerfils(perfils);
-
-		try {
-			usrDAO.update(usr);
-			System.out.println("Perfil adicionado");
-		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void handleAdicionarPerfil(String login, String nomePerfil, String sistema) throws ServicosHandlerException {
+		
+		if(Util.checkEmpty(login))
+			throw new ServicosHandlerException("erro.servicos.handler.adiciona.perfil.login.vazio");
+		
+		if(Util.checkEmpty(nomePerfil))
+			throw new ServicosHandlerException("erro.servicos.handler.adiciona.perfil.perfil.vazio");
+		
+		if(Util.checkEmpty(sistema))
+			throw new ServicosHandlerException("erro.servicos.handler.adiciona.perfil.sistema.vazio");
+		
+		Usuario usuario = recuperaUsuario(login);
+		
+		if(usuario == null) {
+			throw new ServicosHandlerException("erro.servicos.handler.adiciona.perfil.usuario.nao.encontrado");
 		}
-
+		
+		Perfil perfil = recuperaPerfil(nomePerfil, sistema);
+		
+		if(perfil == null) {
+			throw new ServicosHandlerException("erro.servicos.handler.adiciona.perfil.perfil.nao.encontrado");
+		}
+		
+		if(usuario.getPerfils() == null)
+			usuario.setPerfils(new ArrayList());
+		
+		usuario.getPerfils().add(perfil);
+		
+		manipulaUsuario(usuario, new UpdateAction());
 	}
 }
