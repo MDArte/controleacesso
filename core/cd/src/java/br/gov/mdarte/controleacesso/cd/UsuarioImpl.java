@@ -5,6 +5,11 @@
 //
 package br.gov.mdarte.controleacesso.cd;
 
+import java.security.NoSuchAlgorithmException;
+
+import br.gov.mdarte.controleacesso.eo.Situacao;
+import br.gov.mdarte.controleacesso.util.Util;
+
 
 /**
  * @see br.gov.mdarte.controleacesso.cd.Usuario
@@ -15,25 +20,21 @@ public class  UsuarioImpl     extends br.gov.mdarte.controleacesso.cd.UsuarioAbs
      * The serial version UID of this class. Needed for serialization. 
      */
     private static final long serialVersionUID = -8798643464761788062L;
+    
+    public UsuarioImpl() {
+    	
+    }
         
-    public UsuarioImpl()  {
-    		
+    public UsuarioImpl(String login, String senha, String email) throws NoSuchAlgorithmException  {
+		this.setLogin(login);
+		this.setSenha(Util.md5(senha));
+		this.setSituacao(Situacao.ATIVO);
+		this.setEmail(email);
     }
 
-    public UsuarioImpl(String login)  {
-		setLogin(login);
-    }
-
-
-
-
-
-
-
-
+	@Override
 	public String getNomeIdentificadorMenu() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-}    
+}

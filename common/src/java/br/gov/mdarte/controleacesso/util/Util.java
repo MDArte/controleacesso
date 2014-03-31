@@ -5,8 +5,7 @@
 //
 package br.gov.mdarte.controleacesso.util;
 
-import br.gov.mdarte.controleacesso.util.UtilAbstract;
 
 public class Util extends UtilAbstract{
-
+	
 }

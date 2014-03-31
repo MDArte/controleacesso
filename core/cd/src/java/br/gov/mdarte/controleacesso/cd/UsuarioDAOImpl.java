@@ -24,6 +24,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
+import br.gov.mdarte.controleacesso.util.Util;
 import br.gov.mdarte.controleacesso.vo.UsuarioVO;
 import br.ufrj.coppetec.DataObject;
  
@@ -34,15 +35,13 @@ public class UsuarioDAOImpl extends UsuarioDAO {
     	
     	Session session = AbstractDAO.currentSession();
     	Criteria criterios = session.createCriteria(UsuarioImpl.class);
-    	if(vo instanceof UsuarioVO)
-		{
+    	
+    	if(vo instanceof UsuarioVO) {
 			UsuarioVO usuarioVO = (UsuarioVO) vo;
 			
-			if(usuarioVO.getLogin() != null && !usuarioVO.getLogin().equals(""))
-			{
-				criterios.add(Restrictions.ilike("login", usuarioVO.getLogin(),MatchMode.ANYWHERE));
+			if(!Util.checkEmpty(usuarioVO.getLoginExato())) {
+				criterios.add(Restrictions.ilike("login", usuarioVO.getLoginExato(),MatchMode.EXACT));
 			}
-			
 		}
 
 		return criterios;

@@ -11,11 +11,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import br.gov.mdarte.controleacesso.ServiceLocator;
-import br.gov.mdarte.controleacesso.util.Constantes;
 import accessControl.exception.ControleAcessoException;
-import br.gov.mdarte.controleacesso.cd.*;
-import br.gov.mdarte.controleacesso.cs.servicos.ServicosException;
+import br.gov.mdarte.controleacesso.cd.Acao;
+import br.gov.mdarte.controleacesso.cd.AcaoDAOImpl;
+import br.gov.mdarte.controleacesso.cd.Perfil;
+import br.gov.mdarte.controleacesso.cd.PerfilDAOImpl;
+import br.gov.mdarte.controleacesso.cd.UsuarioDAOImpl;
+import br.gov.mdarte.controleacesso.cd.UsuarioImpl;
+import br.gov.mdarte.controleacesso.util.Constantes;
 
 
 public  class ControleAcessoImpl extends accessControl.ControleAcesso {
