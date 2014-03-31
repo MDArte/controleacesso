@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>../project.xml</extend>
+    <artifactId>${pom.groupId}-servicos</artifactId>
+    <name>${projectName} servicos EJB</name>
+    <currentVersion>${application.version}</currentVersion>
+    <shortDescription>${pom.name} servicos EJB Component</shortDescription>
+    <description>
+        Contains the ${pom.name}-servicos's EJB module.
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>${pom.groupId}-compartilhado</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>ejb</type>
+            <properties>
+                <ejb.manifest.classpath>true</ejb.manifest.classpath>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>${pom.groupId}-shared</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>ejb</type>
+            <properties>
+                <ejb.manifest.classpath>true</ejb.manifest.classpath>
+            </properties>
+        </dependency>
+    </dependencies>
+</project>

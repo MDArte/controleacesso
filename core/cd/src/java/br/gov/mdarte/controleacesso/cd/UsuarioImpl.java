@@ -20,7 +20,9 @@ public class  UsuarioImpl     extends br.gov.mdarte.controleacesso.cd.UsuarioAbs
     		
     }
 
-    
+    public UsuarioImpl(String login)  {
+		setLogin(login);
+    }
 
 
 

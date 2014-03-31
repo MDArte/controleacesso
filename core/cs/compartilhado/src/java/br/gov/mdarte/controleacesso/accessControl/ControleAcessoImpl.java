@@ -11,9 +11,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import accessControl.Perfil;
+import br.gov.mdarte.controleacesso.ServiceLocator;
+import br.gov.mdarte.controleacesso.util.Constantes;
 import accessControl.exception.ControleAcessoException;
 import br.gov.mdarte.controleacesso.cd.*;
+import br.gov.mdarte.controleacesso.cs.servicos.ServicosException;
+
 
 public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	public static final String SUPER_USUARIO = "1";
@@ -34,74 +37,74 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 		
 		UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 		
-		try
-		{
+		try {
 			return (accessControl.Operador) usuarioDAO.recuperarUsuario(usuario);
-		}
-		catch (br.gov.mdarte.controleacesso.cd.DAOException e)
-		{
-			throw new ControleAcessoException(e.getMessage());
+		} catch (br.gov.mdarte.controleacesso.cd.DAOException exception) {
+			throw new ControleAcessoException(exception);
+		} catch (Exception exception) {
+			throw new ControleAcessoException(exception);
 		}
 	}
-	/*
-	private HashMap<String, Collection<Perfil>> addServices(HashMap<String,Collection<Perfil>> hmServicos, ServicoCA servico, Collection<Perfil> perfis)
+
+	private HashMap<String, Collection<accessControl.Perfil>> addServices(HashMap<String,Collection<accessControl.Perfil>> hmServicos, Acao acao, Collection<accessControl.Perfil> perfis)
 	{
-		if (hmServicos.get(servico.getCodigo()) != null)
-		{
-			hmServicos.get(servico.getCodigo()).addAll(perfis);
+		if(hmServicos.get(acao.getCodigo()) != null) {
+			hmServicos.get(acao.getCodigo()).addAll(perfis);
+		} else {
+			hmServicos.put(acao.getCodigo(), perfis);
 		}
-		else
-		{
-			hmServicos.put(servico.getCodigo(), perfis);
+		
+		for(Acao acaoAgrupada : (Collection<Acao>) acao.getEAgrupadoPor()) {
+			hmServicos = addServices(hmServicos, acaoAgrupada, perfis);
 		}
-		for(ServicoCA servicoAgrupado : (Collection<ServicoCA>)
-				servico.getEAgrupadoPor())
-		{
-			hmServicos = addServices(hmServicos, servicoAgrupado,
-					perfis);
-		}
+		
 		return hmServicos;
 	}
-	*/
 
 	/**
 	 * lista os servicos em um map onde a chave eh o nome do servico e o valor a colecao de perfis que possui acesso ao servico
 	 */
 	@Override
 	public java.util.HashMap<String, java.util.Collection<accessControl.Perfil>> listaServicos() throws ControleAcessoException {
-		HashMap<String, Collection<Perfil>> hmServicos = new
-				HashMap<String, Collection<Perfil>>();
-		/*ServicoCADAOImpl servDAO = new ServicoCADAOImpl();
-		List serviceList =
-				new ArrayList();
-		try
-		{
-			// recupera todos os serviÃƒÂ§os
-			serviceList = servDAO.list();
+		
+		HashMap<String, Collection<accessControl.Perfil>> hmServicos = new HashMap<String, Collection<accessControl.Perfil>>();
+		
+		AcaoDAOImpl acaoDAO = new AcaoDAOImpl();
+		PerfilDAOImpl perfilDAO = new PerfilDAOImpl();
+
+		ArrayList<Long> superPerfils = new ArrayList<Long>();
+		List acaoList = new ArrayList();
+		
+		try {
+			// recupera os perfils supers do sistema
+			superPerfils = (ArrayList<Long>) perfilDAO.recuperarSuperPerfil(Constantes.SISTEMA, null);
+			
+			// recupera todos os serviços
+			acaoList = (List) acaoDAO.recuperarAcoes(Constantes.SISTEMA, null);
+		} catch(br.gov.mdarte.controleacesso.cd.DAOException exception) {
+			throw new ControleAcessoException(exception);
 		}
-		catch(br.gov.mdarte.controleacesso.cd.DAOException e)
-		{
-			throw new ControleAcessoException(e.getMessage());
-		}
-		for(ServicoCA service : (Collection<ServicoCA>) serviceList)
-		{
-			Collection<PerfilOperadorCA> perfilOperadorList =
-					service.getPerfilOperadorCAs();
-			Collection<Perfil> perfilList = new HashSet<Perfil>();
+		
+		for(Acao acao : (Collection<Acao>) acaoList) {
+			Collection<Perfil> perfilAcaoList = acao.getPerfils();
+			Collection<accessControl.Perfil> perfilList = new HashSet<accessControl.Perfil>();
+
 			// adiciona SU para todos os servicos
-			perfilList.add(new Perfil(SUPER_USUARIO));
-			for(PerfilOperadorCA perfilCA : perfilOperadorList)
-			{
-				Perfil perfil = new
-						Perfil(perfilCA.getId().toString());
+			if (superPerfils != null && !superPerfils.isEmpty()) {
+				for (Long idPerfil : superPerfils) {
+					perfilList.add(new accessControl.Perfil(idPerfil.toString()));
+				}
+			}
+
+			for(Perfil perfilCA : perfilAcaoList) {
+				accessControl.Perfil perfil = new accessControl.Perfil(perfilCA.getId().toString());
 				perfilList.add(perfil);
 			}
+			
 			if (!perfilList.isEmpty())
-				hmServicos = addServices(hmServicos, service,
-						perfilList);
+				hmServicos = addServices(hmServicos, acao, perfilList);
 		}
-		return hmServicos;
-		*/
+
 		return hmServicos;
 	}	
 
@@ -110,33 +113,33 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	 */
 	@Override
 	public boolean trocaSenha(accessControl.Operador operador, String senhaAtual, String novaSenha) throws ControleAcessoException{
-		/*
-		OperadorCADAOImpl opDAO = new OperadorCADAOImpl();
-		OperadorCAImpl opRetrieved;
-		OperadorCAImpl op = (OperadorCAImpl) operador;
-		opRetrieved = (OperadorCAImpl) getOperador(op.getLogin());
-		if (!opRetrieved.getSenha().equals(senhaAtual))
-			return false;
-		opRetrieved.setSenha(novaSenha);
+		
+		UsuarioDAOImpl usrDAO = new UsuarioDAOImpl();
+		UsuarioImpl usrRetrieved;
+		UsuarioImpl usr = (UsuarioImpl) operador;
+		usrRetrieved = (UsuarioImpl) getOperador(usr.getLogin());
+		
+		
+		if (!usrRetrieved.getSenha().equals(senhaAtual)) return false;
+		
+		usrRetrieved.setSenha(novaSenha);
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.DATE, PROXIMA_TROCA_SENHA_DIAS);
-		opRetrieved.setDataValidadeSenha(calendar.getTime());
-		try
-		{
-			opDAO.update(opRetrieved);
+		usrRetrieved.setDataValidadeSenha(calendar.getTime());
+		
+		try {
+			usrDAO.update(usrRetrieved);
 		}
-		catch (br.gov.mdarte.controleacesso.cd.DAOException e)
-		{
-			e.printStackTrace();
+		catch (br.gov.mdarte.controleacesso.cd.DAOException exception) {
+			exception.printStackTrace();
 			return false;
 		}
-		return true;
-		*/
+
 		return true;
 	}	
 
 	/**
-	 * Bloqueia o acesso do usuÃ¡rio
+	 * Bloqueia o acesso do usuário
 	 */
 	@Override
 	public void bloqueiaUsuario(String usuario) {
@@ -144,7 +147,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	}		
 
 	/**
-	 * Verifica se o acesso do usuÃ¡rio estÃ¡ bloqueado
+	 * Verifica se o acesso do usuário está bloqueado
 	 */
 	@Override
 	public boolean usuarioBloqueado(String usuario) {
@@ -152,7 +155,7 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 	}	
 
 	/**
-	 * Verifica se a senha Ã© fraca
+	 * Verifica se a senha é fraca
 	 */
 	@Override
 	public boolean senhaFraca(String senha) {
@@ -160,8 +163,8 @@ public  class ControleAcessoImpl extends accessControl.ControleAcesso {
 		/* IMPLEMENTACAO SUGERIDA
 		 *
 		 * (a senha deve possuir pelo menos 8 caracteres,
-		 * incluindo numerais, letras maiÃºsculas,
-		 * letras minÃºsculas e sÃ­mbolos)
+		 * incluindo numerais, letras maiúsculas,
+		 * letras minúsculas e símbolos)
 		 */
 		 
 		if (senha == null) {

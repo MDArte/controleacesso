@@ -6,6 +6,22 @@
     <classpathentry kind="src" path="core/cd/target/src"/>
     <classpathentry kind="src" path="common/src/java"/>
     <classpathentry kind="src" path="common/target/src"/>
+    <classpathentry kind="src" path="core/cs/operador/target/src"/>
+	<classpathentry kind="src" path="core/cs/operador/src/java"/>
+	<classpathentry kind="src" path="core/cs/servicos/target/src"/>
+	<classpathentry kind="src" path="core/cs/servicos/src/java"/>
+	<classpathentry kind="src" path="web/operador/src/java"/>
+	<classpathentry kind="src" path="web/operador/target/src"/>
+	<classpathentry kind="src" path="core/cs/sistema/src/java"/>
+	<classpathentry kind="src" path="core/cs/sistema/target/src"/>
+	<classpathentry kind="src" path="core/cs/initial/target/src"/>
+	<classpathentry kind="src" path="web/sistema/src/java"/>
+	<classpathentry kind="src" path="web/sistema/target/src"/>
+	<classpathentry kind="src" path="web/geral/src/java"/>
+	<classpathentry kind="src" path="web/geral/target/src"/>
+	<classpathentry kind="src" path="web/principal/target/src"/>
+	<classpathentry kind="var" path="JBOSS_HOME/lib/jboss-system.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jboss/jars/jbosssx-4.2.3.GA.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-2.1.jar"/>
@@ -15,6 +31,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/struts/jars/struts-1.2.7.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/commons-validator/jars/commons-validator-1.3.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.4-dev-8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/json/jars/json-simple-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/common-classes/jars/CommonClasses-1.3-RC3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/security/jars/security-1.1.3-RC1.jar"/>

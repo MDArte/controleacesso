@@ -21,16 +21,31 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
-import br.gov.mdarte.controleacesso.cd.DAOException;
-import br.ufrj.coppetec.DataObject; 
+import br.gov.mdarte.controleacesso.vo.UsuarioVO;
+import br.ufrj.coppetec.DataObject;
  
 public class UsuarioDAOImpl extends UsuarioDAO {
 
 
-    protected Object handleFilter(DataObject vo) throws br.gov.mdarte.controleacesso.cd.DAOException {		
-       return null;
+    protected Object handleFilter(DataObject vo) throws br.gov.mdarte.controleacesso.cd.DAOException {
+    	
+    	Session session = AbstractDAO.currentSession();
+    	Criteria criterios = session.createCriteria(UsuarioImpl.class);
+    	if(vo instanceof UsuarioVO)
+		{
+			UsuarioVO usuarioVO = (UsuarioVO) vo;
+			
+			if(usuarioVO.getLogin() != null && !usuarioVO.getLogin().equals(""))
+			{
+				criterios.add(Restrictions.ilike("login", usuarioVO.getLogin(),MatchMode.ANYWHERE));
+			}
+			
+		}
+
+		return criterios;
     }
     
     protected org.hibernate.Criteria handleXmlExport(br.ufrj.coppetec.ValueObject vo, org.hibernate.Session session) throws br.gov.mdarte.controleacesso.cd.DAOException {
@@ -39,7 +54,7 @@ public class UsuarioDAOImpl extends UsuarioDAO {
 
 	@Override
 	protected Object handleRecuperarUsuario(Session session, String login) throws DAOException {
-		Criteria criterios = session.createCriteria(Usuario.class);
+		Criteria criterios = session.createCriteria(UsuarioImpl.class);
 		criterios.add(Restrictions.eq("login", login));
 		
 		Collection usuarios = criterios.list();
