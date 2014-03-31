@@ -40,7 +40,7 @@ public class PerfilDAOImpl extends PerfilDAO {
     protected Object handleFilter(DataObject vo) throws br.gov.mdarte.controleacesso.cd.DAOException {		
     	
     	Session session = AbstractDAO.currentSession();
-    	Criteria criterios = session.createCriteria(UsuarioImpl.class);
+    	Criteria criterios = session.createCriteria(PerfilImpl.class);
     	
     	if(vo instanceof PerfilVO) {
     		PerfilVO perfilVO = (PerfilVO) vo;
@@ -50,8 +50,8 @@ public class PerfilDAOImpl extends PerfilDAO {
 			}
 			
 			if(!Util.checkEmpty(perfilVO.getSistema())) {
-				criterios.createCriteria("sistema");
-				criterios.add(Restrictions.eq("sistema.nome", perfilVO.getNome()));
+				criterios.createAlias("sistema", "sistema");
+				criterios.add(Restrictions.eq("sistema.nome", perfilVO.getSistema()));
 			}
 		}
 
