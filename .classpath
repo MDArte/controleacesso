@@ -9,7 +9,12 @@
 	<classpathentry kind="src" path="core/cs/initial/target/src"/>
 	<classpathentry kind="src" path="core/cs/servicos/target/src"/>
 	<classpathentry kind="src" path="core/cs/servicos/src/java"/>
+	<classpathentry kind="src" path="core/cs/administracao/target/src"/>
+	<classpathentry kind="src" path="core/cs/administracao/src/java"/>
 	<classpathentry kind="src" path="web/principal/target/src"/>
+	<classpathentry kind="src" path="web/principal/src/java"/>
+	<classpathentry kind="src" path="web/administracao/src/java"/>
+	<classpathentry kind="src" path="web/administracao/target/src"/>
 	<classpathentry kind="var" path="JBOSS_HOME/lib/jboss-system.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jboss/jars/jbosssx-4.2.3.GA.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>

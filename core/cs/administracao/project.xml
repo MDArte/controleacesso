@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>../project.xml</extend>
+    <artifactId>${pom.groupId}-administracao</artifactId>
+    <name>${projectName} administracao EJB</name>
+    <currentVersion>${application.version}</currentVersion>
+    <shortDescription>${pom.name} administracao EJB Component</shortDescription>
+    <description>
+        Contains the ${pom.name}-administracao's EJB module.
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>${pom.groupId}-compartilhado</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>ejb</type>
+            <properties>
+                <ejb.manifest.classpath>true</ejb.manifest.classpath>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>${pom.groupId}-shared</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>ejb</type>
+            <properties>
+                <ejb.manifest.classpath>true</ejb.manifest.classpath>
+            </properties>
+        </dependency>
+    </dependencies>
+</project>

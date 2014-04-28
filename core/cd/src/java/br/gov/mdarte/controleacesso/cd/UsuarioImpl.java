@@ -6,6 +6,7 @@
 package br.gov.mdarte.controleacesso.cd;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import br.gov.mdarte.controleacesso.eo.Situacao;
 import br.gov.mdarte.controleacesso.util.Util;
@@ -28,13 +29,21 @@ public class  UsuarioImpl     extends br.gov.mdarte.controleacesso.cd.UsuarioAbs
     public UsuarioImpl(String login, String senha, String email) throws NoSuchAlgorithmException  {
 		this.setLogin(login);
 		this.setSenha(Util.md5(senha));
-		this.setSituacao(Situacao.ATIVO);
 		this.setEmail(email);
+		this.ativarUsuario();
     }
 
 	@Override
 	public String getNomeIdentificadorMenu() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void bloquearUsuario(){
+		this.setSituacao(Situacao.BLOQUEADO);
+	}
+	
+	public void ativarUsuario(){
+		this.setSituacao(Situacao.ATIVO);
 	}
 }

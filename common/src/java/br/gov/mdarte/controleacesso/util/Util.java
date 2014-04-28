@@ -5,7 +5,14 @@
 //
 package br.gov.mdarte.controleacesso.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class Util extends UtilAbstract{
 	
+	public static String formatDate(Date date){
+		String dateFormatted = new SimpleDateFormat("dd/MM/yyyy").format(date);
+		return dateFormatted;
+	}
 }

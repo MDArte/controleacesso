@@ -38,10 +38,18 @@ public class UsuarioDAOImpl extends UsuarioDAO {
     	if(vo instanceof UsuarioVO) {
 			UsuarioVO usuarioVO = (UsuarioVO) vo;
 			
-			if(!Util.checkEmpty(usuarioVO.getLoginExato())) {
-				criterios.add(Restrictions.eq("login", usuarioVO.getLoginExato()));
+			if(!Util.checkEmpty(usuarioVO.getLogin())) {
+				criterios.add(Restrictions.eq("login", usuarioVO.getLogin()));
 			}
-		}
+			
+			if(!Util.checkEmpty(usuarioVO.getEmail())) {
+				criterios.add(Restrictions.eq("email", usuarioVO.getEmail()));
+			}
+		
+			if(usuarioVO.getIdUsuario()!= null) {
+				criterios.add(Restrictions.eq("id", usuarioVO.getIdUsuario()));
+			}
+    	}
 
 		return criterios;
     }

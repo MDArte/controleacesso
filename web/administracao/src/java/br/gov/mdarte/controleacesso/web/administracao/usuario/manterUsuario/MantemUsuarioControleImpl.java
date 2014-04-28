@@ -1,8 +1,16 @@
 
 // license-header java merge-point
 package br.gov.mdarte.controleacesso.web.administracao.usuario.manterUsuario;
-import br.gov.mdarte.controleacesso.util.Constantes;
+import java.util.Collection;
+
 import org.andromda.presentation.bpm4struts.ViewContainer;
+
+import br.gov.mdarte.controleacesso.ServiceLocator;
+import br.gov.mdarte.controleacesso.action.FilterAction;
+import br.gov.mdarte.controleacesso.cd.Usuario;
+import br.gov.mdarte.controleacesso.cd.UsuarioImpl;
+import br.gov.mdarte.controleacesso.util.Util;
+import br.gov.mdarte.controleacesso.vo.UsuarioVO;
 
 /**
  * @see br.gov.mdarte.controleacesso.web.administracao.usuario.manterUsuario.MantemUsuarioControle
@@ -14,10 +22,21 @@ public class MantemUsuarioControleImpl extends MantemUsuarioControle
      */
     public final void carregaUsuario(br.gov.mdarte.controleacesso.web.administracao.usuario.manterUsuario.CarregaUsuarioForm form, ViewContainer container) throws Exception
     {
-    	/*Caso seja necessario usar paginacao		
-    		Integer paginacao = ((Double)container.getAttribute(Constantes.PARAMETRO_PAGINA)).intValue();
-    	*/	
-        // nothing to be done for this operation, there are no properties that can be set
+    	if(form.getIdUsuario() == null)
+    		return;
+    	
+    	Collection usuarios = ServiceLocator.instance().getAdministracaoHandlerBI().recuperarUsuario(form.getIdUsuario());
+    	
+    	if (usuarios != null && !usuarios.isEmpty()){
+    		
+    		Usuario usuario = (Usuario) usuarios.iterator().next();
+	    	form.setIdUsuario(usuario.getId());
+    		form.setLogin(usuario.getLogin());
+	    	form.setEmail(usuario.getEmail());
+	    	if (usuario.getDataValidadeSenha() != null)
+	    		form.setDataValidadeSenha(Util.formatDate(usuario.getDataValidadeSenha()));
+	    	form.setDataValidadeSenhaAsDate(usuario.getDataValidadeSenha());
+    	}
     }
 
     /**
@@ -25,10 +44,15 @@ public class MantemUsuarioControleImpl extends MantemUsuarioControle
      */
     public final void salvaUsuario(br.gov.mdarte.controleacesso.web.administracao.usuario.manterUsuario.SalvaUsuarioForm form, ViewContainer container) throws Exception
     {
-    	/*Caso seja necessario usar paginacao		
-    		Integer paginacao = ((Double)container.getAttribute(Constantes.PARAMETRO_PAGINA)).intValue();
-    	*/	
-        // nothing to be done for this operation, there are no properties that can be set
+    	Collection usuarios = ServiceLocator.instance().getAdministracaoHandlerBI().manterUsuario(form.getLogin(), form.getSenha(), form.getEmail(), form.getDataValidadeSenhaAsDate(),form.getIdUsuario());
+    	
+    	if (Util.checkEmpty(usuarios)) 
+    		return;
+    	
+		Usuario usuario = (Usuario) usuarios.iterator().next();
+		
+		form.setIdUsuario(usuario.getId());
+		
+		saveSuccessMessage("mantem.usuario.salvar.sucesso", container);
     }
-
 }
