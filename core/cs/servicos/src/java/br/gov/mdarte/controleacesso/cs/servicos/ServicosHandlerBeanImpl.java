@@ -12,6 +12,7 @@ import br.gov.mdarte.controleacesso.cd.Perfil;
 import br.gov.mdarte.controleacesso.cd.PerfilImpl;
 import br.gov.mdarte.controleacesso.cd.Usuario;
 import br.gov.mdarte.controleacesso.cd.UsuarioImpl;
+import br.gov.mdarte.controleacesso.eo.Situacao;
 import br.gov.mdarte.controleacesso.util.Util;
 import br.gov.mdarte.controleacesso.vo.PerfilVO;
 import br.gov.mdarte.controleacesso.vo.UsuarioVO;
@@ -116,5 +117,27 @@ public class ServicosHandlerBeanImpl extends ServicosHandlerBean implements Serv
 		usuario.getPerfils().add(perfil);
 		
 		manipulaUsuario(usuario, new UpdateAction());
+	}
+
+	@Override
+	public void handleAtivarUsuario(String login) {
+		
+		Usuario usuario = recuperaUsuario(login);
+		
+		usuario.setSituacao(Situacao.ATIVO);
+		
+		manipulaUsuario(usuario, new UpdateAction());
+		
+	}
+
+	@Override
+	public void handleBloquearUsuario(String login) {
+		
+		Usuario usuario = recuperaUsuario(login);
+		
+		usuario.setSituacao(Situacao.BLOQUEADO);
+		
+		manipulaUsuario(usuario, new UpdateAction());
+		
 	}
 }
