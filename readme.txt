@@ -220,7 +220,7 @@
     http://forum.andromda.org/
 
 
-    Good luck!
+    Good luck!!
 
 
         -- The AndroMDA Team
