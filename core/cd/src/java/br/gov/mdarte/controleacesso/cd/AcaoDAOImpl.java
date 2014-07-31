@@ -38,7 +38,7 @@ public class AcaoDAOImpl extends AcaoDAO {
     }
     
     @Override
-    protected Object handleRecuperarAcoes(Session session) throws DAOException {
+    protected Object handleRecuperarAcoes(Session session,Integer paginacao, Integer linhas, Integer paginas) throws DAOException {
 		Criteria criterios = session.createCriteria(AcaoImpl.class);
 	
 		return criterios;

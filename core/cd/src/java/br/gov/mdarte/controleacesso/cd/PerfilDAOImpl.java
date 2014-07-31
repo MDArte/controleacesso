@@ -63,7 +63,7 @@ public class PerfilDAOImpl extends PerfilDAO {
     }
     
     @Override
-    protected Object handleRecuperarSuperPerfil(Session session, String sistema) throws DAOException {
+    protected Object handleRecuperarSuperPerfil(Session session, String sistema,Integer paginacao, Integer linhas, Integer paginas) throws DAOException {
     	ProjectionList projectionList = Projections.projectionList();
 		
 		projectionList.add(Projections.property("id"));		
